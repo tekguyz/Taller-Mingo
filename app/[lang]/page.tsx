@@ -36,17 +36,124 @@ export default function LangPage({ params }: PageProps) {
   const [drivetrain, setDrivetrain] = useState("4x4");
   const [service, setService] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState("");
   const [contactMethod, setContactMethod] = useState("whatsapp");
   const [notes, setNotes] = useState("");
   
   // Success state
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
+  // Formats Nicaragua phone number dynamically
+  const formatNicaraguaPhone = (value: string): string => {
+    const hasPlus = value.startsWith("+");
+    const cleaned = value.replace(/[^\d]/g, "");
+
+    // Check if they typed the 505 country code or started with a plus
+    if (hasPlus || cleaned.startsWith("505")) {
+      let localDigits = "";
+      if (cleaned.startsWith("505")) {
+        localDigits = cleaned.slice(3);
+      } else {
+        localDigits = cleaned;
+      }
+
+      // Limit local digits to 8 digits max
+      const limitedLocal = localDigits.slice(0, 8);
+
+      // Format the local digits part as XXXX-XXXX
+      let formattedLocal = limitedLocal;
+      if (limitedLocal.length > 4) {
+        formattedLocal = `${limitedLocal.slice(0, 4)}-${limitedLocal.slice(4)}`;
+      }
+
+      if (cleaned.startsWith("505") || (hasPlus && cleaned.length >= 3 && cleaned.startsWith("505"))) {
+        return formattedLocal ? `+505 ${formattedLocal}` : "+505";
+      } else {
+        return `+${cleaned.slice(0, 11)}`;
+      }
+    } else {
+      // Local 8-digit format: XXXX-XXXX
+      const limited = cleaned.slice(0, 8);
+      if (limited.length > 4) {
+        return `${limited.slice(0, 4)}-${limited.slice(4)}`;
+      }
+      return limited;
+    }
+  };
+
+  const isValidNicaraguaPhone = (phoneNum: string): boolean => {
+    const digitsOnly = phoneNum.replace(/[^\d]/g, "");
+    if (digitsOnly.startsWith("505")) {
+      return digitsOnly.length === 11;
+    }
+    return digitsOnly.length === 8;
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    const formatted = formatNicaraguaPhone(val);
+    setPhone(formatted);
+
+    // Dynamic error clearing/validation: Only show live error once they enter enough details, otherwise clear error
+    const digitsOnly = formatted.replace(/[^\d]/g, "");
+    if (digitsOnly.length > 0) {
+      if (digitsOnly.startsWith("505")) {
+        if (digitsOnly.length === 11) {
+          setPhoneError("");
+        } else if (digitsOnly.length > 11) {
+          setPhoneError(
+            lang === "es"
+              ? "Número inválido. No debe exceder de 8 dígitos después de +505."
+              : "Invalid number. Must not exceed 8 digits after +505."
+          );
+        } else {
+          setPhoneError(""); // Let them type
+        }
+      } else {
+        if (digitsOnly.length === 8) {
+          setPhoneError("");
+        } else if (digitsOnly.length > 8) {
+          setPhoneError(
+            lang === "es"
+              ? "Número inválido. El teléfono local debe tener exactamente 8 dígitos."
+              : "Invalid number. Local phone must have exactly 8 digits."
+          );
+        } else {
+          setPhoneError(""); // Let them type
+        }
+      }
+    } else {
+      setPhoneError("");
+    }
+  };
+
+  const handlePhoneBlur = () => {
+    if (phone && !isValidNicaraguaPhone(phone)) {
+      setPhoneError(
+        lang === "es"
+          ? "Número de teléfono inválido para Nicaragua. Debe tener exactamente 8 dígitos (ej. 8873-0334 o +505 8873-0334)."
+          : "Invalid phone number for Nicaragua. Must have exactly 8 digits (e.g. 8873-0334 or +505 8873-0334)."
+      );
+    } else {
+      setPhoneError("");
+    }
+  };
+
   const quoteFormRef = useRef<HTMLDivElement>(null);
 
   const handleQuoteSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!make || !model || !year || !service || !phone) return;
+
+    // Validate phone number format for Nicaragua
+    if (!isValidNicaraguaPhone(phone)) {
+      setPhoneError(
+        lang === "es"
+          ? "Número de teléfono inválido para Nicaragua. Debe tener exactamente 8 dígitos (ej. 8873-0334 o +505 8873-0334)."
+          : "Invalid phone number for Nicaragua. Must have exactly 8 digits (e.g. 8873-0334 or +505 8873-0334)."
+      );
+      return;
+    }
 
     const requestNotes = notes || "Mantenimiento general / Modificación personalizada.";
 
@@ -82,6 +189,7 @@ export default function LangPage({ params }: PageProps) {
     setDrivetrain("4x4");
     setService("");
     setPhone("");
+    setPhoneError("");
     setContactMethod("whatsapp");
     setNotes("");
     
@@ -396,12 +504,18 @@ export default function LangPage({ params }: PageProps) {
                           <input 
                             type="tel"
                             required
-                            placeholder="e.g. +505 8873-0334"
+                            placeholder={lang === "es" ? "ej. 8873-0334 o +505 8873-0334" : "e.g. 8873-0334 or +505 8873-0334"}
                             value={phone}
-                            onChange={(e) => setPhone(e.target.value)}
-                            className="w-full bg-[oklch(98%_0.005_90)] border-2 border-[oklch(20%_0.01_60)] p-3 font-sans text-sm font-semibold focus:outline-none focus:bg-white text-[oklch(20%_0.01_60)] placeholder:text-[oklch(20%_0.01_60)]/40 focus:border-[oklch(65%_0.22_55%)] transition-colors rounded-none"
+                            onChange={handlePhoneChange}
+                            onBlur={handlePhoneBlur}
+                            className={`w-full bg-[oklch(98%_0.005_90)] border-2 p-3 font-sans text-sm font-semibold focus:outline-none focus:bg-white text-[oklch(20%_0.01_60)] placeholder:text-[oklch(20%_0.01_60)]/40 transition-colors rounded-none ${phoneError ? "border-red-600 focus:border-red-600 bg-red-50/30" : "border-[oklch(20%_0.01_60)] focus:border-[oklch(65%_0.22_55%)]"}`}
                             id="phone-input"
                           />
+                          {phoneError && (
+                            <span className="font-sans text-[10px] font-bold text-red-600 uppercase mt-1 leading-tight">
+                              ⚠ {phoneError}
+                            </span>
+                          )}
                         </div>
 
                         <div className="flex flex-col gap-1">
