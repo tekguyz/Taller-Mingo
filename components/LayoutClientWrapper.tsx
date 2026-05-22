@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { MessageSquare } from 'lucide-react';
 
 interface LayoutClientWrapperProps {
   children: React.ReactNode;
@@ -17,18 +18,18 @@ export default function LayoutClientWrapper({ children, lang }: LayoutClientWrap
       
       {/* CRISP WHITE NAVIGATION BAR */}
       <header className="sticky top-0 bg-white z-40 border-b-2 border-[oklch(20%_0.01_60)] transition-all">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 h-14 md:h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6 h-14 lg:h-20 flex items-center justify-between">
           <Link href={`/${lang}`} className="flex flex-col select-none no-underline">
-            <span className="font-space font-black text-xl md:text-3xl tracking-tighter uppercase text-[oklch(20%_0.01_60)] leading-none">
+            <span className="font-space font-black text-xl lg:text-3xl tracking-tighter uppercase text-[oklch(20%_0.01_60)] leading-none">
               TALLER MINGO
             </span>
-            <span className="hidden md:block font-sans text-[10px] text-[oklch(20%_0.01_60)]/60 font-bold tracking-widest uppercase mt-1">
+            <span className="hidden lg:block font-sans text-[10px] text-[oklch(20%_0.01_60)]/60 font-bold tracking-widest uppercase mt-1">
               CHINANDEGA, NICARAGUA
             </span>
           </Link>
 
-          {/* Desktop Navigation Links inside header - only visible on md and larger */}
-          <nav className="hidden md:flex items-center gap-6 font-space text-xs font-black uppercase tracking-widest text-[oklch(20%_0.01_60)]">
+          {/* Desktop Navigation Links inside header - only visible on lg and larger */}
+          <nav className="hidden lg:flex items-center gap-6 font-space text-xs font-black uppercase tracking-widest text-[oklch(20%_0.01_60)]">
             <Link href="#general-services" className="hover:text-[oklch(65%_0.22_55%)] transition-colors no-underline">
               [ {lang === 'es' ? 'SERVICIOS' : 'SERVICES'} ]
             </Link>
@@ -41,21 +42,37 @@ export default function LayoutClientWrapper({ children, lang }: LayoutClientWrap
           </nav>
 
           {/* Desktop Menu Actions */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden lg:flex items-center gap-4">
             <Link
               href={`/${targetLang}`}
-              className="font-space text-xs md:text-sm font-black uppercase transition-colors hover:text-[oklch(65%_0.22_55%)] text-[oklch(20%_0.01_60)] no-underline"
+              className="font-space text-xs lg:text-sm font-black uppercase transition-colors hover:text-[oklch(65%_0.22_55%)] text-[oklch(20%_0.01_60%)] no-underline h-10 flex items-center px-2"
               id="lang-toggle-link"
             >
               [ {targetLang.toUpperCase()} ]
             </Link>
 
+            {/* Small solid WhatsApp Action in Header */}
+            <a
+              href={`https://wa.me/50588730334?text=${encodeURIComponent(
+                lang === 'es'
+                  ? "Hola Taller Mingo, me interesa cotizar una reparación mecánica o modificación 4x4."
+                  : "Hello Taller Mingo, I would like to get a quote for standard mechanical repair or 4x4 lift modification."
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white hover:bg-[oklch(65%_0.22_55%)] text-[oklch(20%_0.01_60%)] font-space font-black text-xs uppercase px-4 h-12 border-2 border-[oklch(20%_0.01_60%)] shadow-[2px_2px_0px_0px_rgba(20,20,20,1)] hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] transition-all flex items-center gap-2 rounded-none no-underline cursor-pointer"
+              id="header-whatsapp-btn"
+            >
+              <MessageSquare className="h-4 w-4 shrink-0 stroke-[2.5]" />
+              <span>WHATSAPP</span>
+            </a>
+
             <a
               href="tel:+50588730334"
-              className="bg-[oklch(65%_0.22_55%)] text-[oklch(20%_0.01_60)] font-space font-black text-xs md:text-sm uppercase px-5 py-3 border-2 border-[oklch(20%_0.01_60)] shadow-[2px_2px_0px_0px_rgba(20,20,20,1)] hover:bg-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(20,20,20,1)] transition-all flex items-center gap-2 rounded-none no-underline"
+              className="bg-[oklch(65%_0.22_55%)] text-[oklch(20%_0.01_60%)] font-space font-black text-xs lg:text-sm uppercase px-5 h-12 border-2 border-[oklch(20%_0.01_60%)] shadow-[2px_2px_0px_0px_rgba(20,20,20,1)] hover:bg-white hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[1px_1px_0px_0px_rgba(20,20,20,1)] transition-all flex items-center gap-2 rounded-none no-underline"
               id="call-now-btn"
             >
-              <span>CALL NOW:</span>
+              <span>{lang === 'es' ? 'LLAMAR:' : 'CALL NOW:'}</span>
               <span className="underline font-bold">+505 8873-0334</span>
             </a>
           </div>
@@ -63,7 +80,7 @@ export default function LayoutClientWrapper({ children, lang }: LayoutClientWrap
           {/* Compact Mobile Menu trigger button */}
           <button
             onClick={() => setIsOpen(true)}
-            className="flex md:hidden bg-[oklch(98%_0.005_90)] border-2 border-[oklch(20%_0.01_60)] px-3 py-1.5 font-space font-black text-xs uppercase text-[oklch(20%_0.01_60)] tracking-wider hover:bg-[oklch(20%_0.01_60)] hover:text-white transition-all rounded-none cursor-pointer"
+            className="flex lg:hidden bg-[oklch(98%_0.005_90)] border-2 border-[oklch(20%_0.01_60)] px-3 py-1.5 font-space font-black text-xs uppercase text-[oklch(20%_0.01_60)] tracking-wider hover:bg-[oklch(20%_0.01_60)] hover:text-white transition-all rounded-none cursor-pointer"
             id="mobile-drawer-toggle-btn"
           >
             [ MENU ]
@@ -74,7 +91,7 @@ export default function LayoutClientWrapper({ children, lang }: LayoutClientWrap
       {/* HARD-EDGED SLIDE-OVER MOBILE DRAWER */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-50 flex justify-end bg-black/40 md:hidden" 
+          className="fixed inset-0 z-50 flex justify-end bg-black/40 lg:hidden" 
           id="mobile-menu-overlay" 
           onClick={() => setIsOpen(false)}
         >
@@ -217,7 +234,7 @@ export default function LayoutClientWrapper({ children, lang }: LayoutClientWrap
                 href="https://www.facebook.com/tallermingochinandega/"
                 target="_blank"
                 rel="noreferrer noopener"
-                className="inline-flex items-center justify-center border-2 border-[oklch(65%_0.22_55)] bg-[oklch(65%_0.22_55)] hover:bg-transparent text-[oklch(20%_0.01_60)] hover:text-white font-space font-black text-xs uppercase px-5 py-2.5 transition-colors duration-150 rounded-none no-underline"
+                className="inline-flex items-center justify-center border-2 border-[oklch(65%_0.22_55%)] bg-[oklch(65%_0.22_55%)] hover:bg-transparent text-[oklch(20%_0.01_60%)] hover:text-white font-space font-black text-xs uppercase px-5 py-2.5 transition-colors duration-150 rounded-none no-underline"
               >
                 [ FACEBOOK PAGE ]
               </a>
