@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-grease: oklch(20% 0.01 60);
+  --color-brand-amber: oklch(65% 0.22 55);
+  --color-surface-base: oklch(98% 0.005 90);
+  --color-status-online: oklch(62% 0.19 145);
+  
+  --font-sans: "Inter", "Helvetica Neue", sans-serif;
+  --font-space: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+:root {
+  --brand-grease: oklch(20% 0.01 60);
+  --brand-amber: oklch(65% 0.22 55);
+  --surface-base: oklch(98% 0.005 90);
+  --status-online: oklch(62% 0.19 145);
+}
+
+body {
+  background-color: var(--surface-base);
+  color: var(--brand-grease);
+  font-family: var(--font-sans);
+}
+
+/* Force absolute rounded-none across the app to satisfy the anti-pattern guardrail */
+* {
+  border-radius: 0px !important;
+}
+
+.commercial-card-shadow {
+  box-shadow: 4px 4px 0px 0px var(--brand-grease);
+}
+
+.premium-container {
+  background-color: var(--surface-base);
+}
+

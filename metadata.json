@@ -1,0 +1,6 @@
+{
+  "name": "Taller Mecánico Automotriz Mingo",
+  "description": "Premium 4x4 off-road structural modifications and severe mechanical maintenance in Chinandega, Nicaragua.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
